@@ -3,7 +3,6 @@ package org.example.springbootapp.service;
 import jakarta.transaction.Transactional;
 import org.example.springbootapp.dao.UserDao;
 import org.example.springbootapp.models.User;
-import org.example.springbootapp.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -23,9 +22,6 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional
     public List<User> getAllUsers() {
-        if (userDao.getAllUsers() == null) {
-            return new ArrayList<>();
-        }
         return userDao.getAllUsers();
     }
 
@@ -43,13 +39,22 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
-    public void updateUser(User user) {
-        userDao.updateUser(user);
+    public void updateUser(int id, User user) {
+        User updatedUser = userDao.getUserById(id);
+        updatedUser.setFirstName(user.getFirstName());
+        updatedUser.setSecondName(user.getSecondName());
+        updatedUser.setAge(user.getAge());
+        updatedUser.setPhoneNumber(user.getPhoneNumber());
+        userDao.updateUser(updatedUser);
+
     }
 
     @Override
     @Transactional
     public void deleteUser(int id) {
-        userDao.deleteUser(id);
+        User user = getUserById(id);
+        if (user != null) {
+            userDao.deleteUser(user);
+        }
     }
 }

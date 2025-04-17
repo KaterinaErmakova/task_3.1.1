@@ -1,15 +1,11 @@
 package org.example.springbootapp.controller;
 
-import org.example.springbootapp.models.Car;
 import org.example.springbootapp.models.User;
 import org.example.springbootapp.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 
 @Controller
@@ -35,13 +31,8 @@ public class UserController {
     }
 
     @PostMapping("/save_user")
-    public String saveUser(@RequestParam("firstName") String firstName,
-                            @RequestParam("secondName") String secondName,
-                            @RequestParam("age") byte age,
-                            @RequestParam("model") String model,
-                            @RequestParam("number") int number) {
-        Car car = new Car(model, number);
-        User user = new User(firstName,secondName,car,age);
+    public String saveUser(@RequestBody User user) {
+
         userService.saveUser(user);
         return "redirect:/";
     }
@@ -55,19 +46,8 @@ public class UserController {
 
     @PostMapping("/update_user")
     public String updateUser(@RequestParam("id") int id,
-                             @RequestParam("firstName") String firstName,
-                             @RequestParam("secondName") String secondName,
-                             @RequestParam("age") byte age,
-                             @RequestParam("model") String model,
-                             @RequestParam("number") int number) {
-        User updatedUser = userService.getUserById(id);
-        updatedUser.setFirstName(firstName);
-        updatedUser.setSecondName(secondName);
-        updatedUser.setAge(age);
-        Car updatedUserCar = updatedUser.getCar();
-        updatedUserCar.setModel(model);
-        updatedUserCar.setNumber(number);
-        userService.updateUser(updatedUser);
+                             @RequestBody User user) {
+        userService.updateUser(id, user);
         return "redirect:/";
     }
 
